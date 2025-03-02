@@ -23,3 +23,6 @@ python3 xxxx.py #输入对应的py文件名称
 
 最终效果：
 ![alt text](image.png)
+
+最终的效果如下，但是现在没有办法解析选定3D文件。
+![alt text](image-1.png)
