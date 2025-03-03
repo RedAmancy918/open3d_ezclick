@@ -26,3 +26,6 @@ python3 xxxx.py #输入对应的py文件名称
 
 最终的效果如下，但是现在没有办法解析选定3D文件。
 ![alt text](image-1.png)
+
+我进一步的优化了代码，并且优化了UI界面的设计。
+![alt text](image-3.png)
