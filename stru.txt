@@ -1,0 +1,43 @@
+项目文件结构如下：
+
+```
+hair_ezclick/
+│
+├── run.py                       # 主程序入口
+├── config.json                  # 配置文件（自动生成）
+│
+├── utils/                       # 工具模块
+│   ├── __init__.py
+│   ├── config_manager.py        # 配置管理
+│   ├── data_interface.py        # 后端数据接口
+│   └── model_manager.py         # 模型管理
+│
+├── gui/                         # 图形界面模块
+│   ├── __init__.py
+│   ├── main_window.py           # 主窗口
+│   ├── viewport.py              # 3D视口
+│   ├── image_view_widget.py     # 图像显示组件
+│   ├── sidebar.py               # 侧边栏（属性面板和控制面板）
+│   ├── toolbars.py              # 工具栏
+│   └── styled_frame.py          # 自定义样式框架
+│
+├── renderer/                    # 渲染器模块
+│   ├── __init__.py
+│   └── open3d_renderer.py       # Open3D渲染器
+│
+└── icons/                       # 图标资源目录
+    ├── nav_icon.png
+    ├── pen_icon.png
+    ├── user_icon.png
+    └── edit3d_icon.png
+```
+
+需要创建的文件夹：
+1. utils/
+2. gui/
+3. renderer/
+4. icons/
+
+每个目录都需要有一个__init__.py文件，使其成为可导入的Python包。
+
+icons文件夹需要包含图标文件，如果没有可以使用占位图标或者在代码中处理图标缺失的情况。
