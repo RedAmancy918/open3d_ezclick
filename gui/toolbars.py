@@ -9,7 +9,7 @@ import os
 from PySide6.QtWidgets import QToolBar, QToolButton, QButtonGroup
 from PySide6.QtGui import QAction
 from PySide6.QtGui import QIcon
-from PySide6.QtCore import Signal, QSize
+from PySide6.QtCore import Signal, QSize, Qt
 
 
 class MainToolBar(QToolBar):
@@ -28,7 +28,7 @@ class MainToolBar(QToolBar):
         super().__init__(parent)
         self.setMovable(False)
         self.setIconSize(QSize(32, 32))
-        self.setToolButtonStyle(QToolBar.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         
         # 保存配置引用
         self.config = config

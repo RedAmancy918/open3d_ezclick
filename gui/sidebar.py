@@ -8,7 +8,7 @@
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QComboBox, 
                               QPushButton, QGroupBox, QFormLayout, QSpinBox, 
                               QLineEdit, QScrollArea, QSizePolicy)
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Qt, Signal
 
 
 class PropertiesPanel(QWidget):
@@ -247,7 +247,7 @@ class ControlPanel(QWidget):
         
         # 添加连接后端按钮
         layout.addSpacing(20)
-        self.connect_button = QPushButton("连接到后端")
+        self.connect_button = QPushButton("后端预留窗")
         self.connect_button.clicked.connect(self._on_connect_clicked)
         layout.addWidget(self.connect_button)
         
