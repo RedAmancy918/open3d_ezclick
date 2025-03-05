@@ -29,7 +29,7 @@ conda activate open3d_ezclick
 
 ### 2. 安装脚本
 为了方便安装，运行一下setup.sh。如果还有缺什么就再装。
-
+尝试了在全新设备中运行，还需要先装一下pyqt6
 ```bash
 chmod +x setup.sh
 ./setup.sh
