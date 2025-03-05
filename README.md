@@ -113,6 +113,9 @@ python run.py
 ## 许可证
 
 请参阅LICENSE文件了解更多信息。
+MIT LICENSE
+Mar 05 2025
+今天看了一下，blender支持bpy的pip，但是版本需要与py版本对应。
 
 
 <details>
