@@ -12,7 +12,7 @@ from PySide6.QtCore import QObject, Signal
 
 
 class ModelManager(QObject):
-    """模型管理类，处理3D模型的编辑和处理功能"""
+    """模型管理类，处理3D模型的编辑和处理功能push"""
     
     # 信号定义
     model_updated = Signal()  # 模型更新后发出的信号
