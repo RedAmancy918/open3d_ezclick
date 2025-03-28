@@ -40,6 +40,9 @@ class ImageViewWidget(QWidget):
         pal = self.palette()
         pal.setColor(QPalette.Window, QColor(255, 255, 255))
         self.setPalette(pal)
+        
+        # 连接渲染器的点添加信号
+        self.renderer.point_added.connect(self.on_point_added)
     
     def set_image(self, img_array):
         """设置要显示的图像
@@ -118,8 +121,31 @@ class ImageViewWidget(QWidget):
             self.edit_points.append(QPoint(event.position().x(), event.position().y()))
             self.update()
         else:
-            # 在默认模式下，用于旋转/平移视图
-            self.last_pos = event.position()
+            # 在默认模式下，处理点击生成点
+            if event.button() == Qt.MouseButton.LeftButton:
+                # 获取点击位置相对于图像的位置
+                if self.image is not None:
+                    # 计算图像在窗口中的实际位置和大小
+                    scaled_width = self.width() * 0.8  # 假设图像宽度为窗口宽度的80%
+                    scaled_height = scaled_width * (self.image.shape[0] / self.image.shape[1])
+                    x_offset = (self.width() - scaled_width) / 2
+                    y_offset = (self.height() - scaled_height) / 2
+                    
+                    # 计算点击位置相对于图像的位置
+                    x = event.position().x() - x_offset
+                    y = event.position().y() - y_offset
+                    
+                    # 将坐标映射到图像尺寸
+                    x = int(x * (self.image.shape[1] / scaled_width))
+                    y = int(y * (self.image.shape[0] / scaled_height))
+                    
+                    # 确保坐标在有效范围内
+                    if 0 <= x < self.image.shape[1] and 0 <= y < self.image.shape[0]:
+                        # 调用渲染器处理点击
+                        self.renderer.handle_click(x, y)
+            else:
+                # 用于旋转/平移视图
+                self.last_pos = event.position()
     
     def mouseMoveEvent(self, event):
         """鼠标移动事件处理器
@@ -198,3 +224,12 @@ class ImageViewWidget(QWidget):
         # 清除编辑点
         self.edit_points = []
         self.update()
+
+    def on_point_added(self, point_3d):
+        """处理新点添加事件
+        
+        Args:
+            point_3d (numpy.ndarray): 新添加的3D点坐标
+        """
+        print(f"添加新点: {point_3d}")
+        # 这里可以添加额外的处理逻辑，比如更新UI显示等

@@ -16,6 +16,7 @@ class Open3DRenderer(QObject):
     # 信号定义
     render_ready = Signal(np.ndarray)
     model_loaded = Signal(bool, str)  # 参数: 是否成功, 信息
+    point_added = Signal(np.ndarray)  # 新增：当添加新点时发出信号
     
     def __init__(self, config=None):
         """初始化Open3D渲染器
@@ -30,6 +31,8 @@ class Open3DRenderer(QObject):
         self.height = 600
         self.background_color = np.array([1, 1, 1])  # 白色背景
         self.point_size = 2.0
+        self.click_points = []  # 存储点击生成的点
+        self.click_point_cloud = None  # 存储点击生成的点云对象
         
         # 如果提供了配置，从配置中加载参数
         if config:
@@ -289,3 +292,56 @@ class Open3DRenderer(QObject):
         """清理资源"""
         self.timer.stop()
         self.vis.destroy_window()
+
+    def handle_click(self, x, y):
+        """处理鼠标点击事件
+        
+        Args:
+            x (int): 点击的x坐标
+            y (int): 点击的y坐标
+        """
+        if not self.geometry_loaded or self.current_model is None:
+            return
+            
+        # 获取深度缓冲
+        depth = self.vis.capture_depth_float_buffer(do_render=True)
+        if depth is None:
+            return
+            
+        # 获取点击位置的深度值
+        depth_value = depth[y, x]
+        if depth_value == 1.0:  # 如果点击在背景上
+            return
+            
+        # 获取相机参数
+        view_control = self.vis.get_view_control()
+        camera_params = view_control.convert_to_pinhole_camera_parameters()
+        
+        # 将屏幕坐标转换为3D点
+        intrinsic = camera_params.intrinsic.intrinsic_matrix
+        extrinsic = camera_params.extrinsic
+        
+        # 计算3D点坐标
+        z = depth_value
+        x_3d = (x - intrinsic[0, 2]) * z / intrinsic[0, 0]
+        y_3d = (y - intrinsic[1, 2]) * z / intrinsic[1, 1]
+        point_3d = np.array([x_3d, y_3d, z])
+        
+        # 转换到世界坐标系
+        point_3d = np.dot(extrinsic[:3, :3], point_3d) + extrinsic[:3, 3]
+        
+        # 添加新点到点云
+        self.click_points.append(point_3d)
+        
+        # 创建或更新点击点云
+        if self.click_point_cloud is None:
+            self.click_point_cloud = o3d.geometry.PointCloud()
+            self.click_point_cloud.points = o3d.utility.Vector3dVector(self.click_points)
+            self.click_point_cloud.paint_uniform_color([1, 0, 0])  # 红色
+            self.vis.add_geometry(self.click_point_cloud)
+        else:
+            self.click_point_cloud.points = o3d.utility.Vector3dVector(self.click_points)
+            self.vis.update_geometry(self.click_point_cloud)
+        
+        # 发送信号通知新点已添加
+        self.point_added.emit(point_3d)
